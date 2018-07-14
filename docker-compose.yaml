@@ -4,12 +4,20 @@ services:
     build:
       context: .
       dockerfile: docker/web/Dockerfile
-    image: home-inventory
+    image: personal-inventory
     ports:
       - 80:80
     volumes:
-      - .:/var/www/app
-      - ./data:/data
+      # Map the volumes to files we edit during development
+      # This leaves the vendor and other things set up during the container build inside the container
+      - ./config:/var/www/app/config
+      - ./src:/var/www/app/src
+      - ./templates:/var/www/app/templates
+      - ./tests:/var/www/app/tests
+      # Permanent data
+      - ./data/images:/data/images
 
   mongodb:
     image: mongo:4.0.0
+    volumes:
+      - ./data/db:/data/db

@@ -28,7 +28,7 @@ To take a photo of an item, simply browse to the site on your mobile device.  Wh
 Running the Application
 -----------------------
 
-The only requirement to run the application is docker.  To run the personal inventory manager on a single desktop computer, run `docker-compose --build up`. Once it's complete open http://localhost in your favorite browser.
+The only requirement to run the application is docker and docker-compose.  To run the personal inventory manager on a single desktop computer, run `docker-compose up --build`. Once it's complete open http://localhost in your favorite browser.
 
 For any other type of setup, such as on a home network Linux server, edit or override the settings in `docker-compose.yaml`.
 
