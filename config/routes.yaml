@@ -1,0 +1,17 @@
+index:
+    path: /
+    controller: App\Controller\Home::index
+
+inventory_list:
+    path: /inventory
+    controller: App\Controller\Inventory::listItems
+inventory_add:
+    path: /inventory/add
+    controller: App\Controller\Inventory::editItem
+inventory_get:
+    path: /inventory/{id}
+    controller: App\Controller\Inventory::getItem
+inventory_edit:
+    path: /inventory/{id}/edit
+    controller: App\Controller\Inventory::editItem
+
