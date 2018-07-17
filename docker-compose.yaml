@@ -8,7 +8,7 @@ services:
     ports:
       - 80:80
     volumes:
-      - ./data/images:/data/images
+      - .:/var/www/app
 
   mongodb:
     image: mongo:4.0.0

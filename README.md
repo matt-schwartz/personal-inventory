@@ -35,14 +35,8 @@ Application data is stored using MongoDB in the `/data/db` directory.  Images ar
 Running the Application
 -----------------------
 
-The only requirement to run the application is docker and docker-compose.  To run the personal inventory manager on a single desktop computer, run `docker-compose up --build`. Once it's complete open http://localhost in your favorite browser.
+The only requirement to run the application is docker and docker-compose.  To run the personal inventory manager on a single desktop computer, run `./bin/run.sh`. Once it's complete open http://localhost in your favorite browser.
+
+On first run the startup script will download dependencies. On subsequent runs the script will skip this and start up very quickly.
 
 For any other type of setup, such as on a home network Linux server, edit or override the settings in `docker-compose.yaml`.
-
-### Development
-
-For development we set the local project directory as a volume in the container.  This lets us see file edits immediately. We just have to set up a few things that are otherwise written automatically into the project directory during the container build.
-
-1. Set environment variables: `cp .env.dist .env` and edit as desired, e.g. `APP_ENV=dev`
-1. Start docker: `docker-compose -f docker-compose.yaml -f docker-compose-development.yaml up --build`
-1. Run composer: `docker-compose exec web sh -c "composer install"`
