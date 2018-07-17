@@ -9,6 +9,9 @@ class DocumentStorage
     /** MongoDB\Client */
     protected $client;
 
+    /** @var boolean Have we initialized the databases and collections? */
+    protected $init = false;
+
     public function __consruct()
     {
         $this->client = new MongoDB\Client($_ENV['DATABASE_URL']);
@@ -21,8 +24,36 @@ class DocumentStorage
      */
     public function getInventory()
     {
-        // Create db if it doesn't exist
-        $this->client->inventory;
+        if (!$this->client) {
+            throw new \RuntimeException('Error establishing connection to MongoDB');
+        }
+        if (!$this->init) {
+            // Create db if it doesn't exist
+            $found = false;
+            foreach ($this->client->listDatabases() as $db) {
+                if ($db->getName() === 'inventory') {
+                    $found = true;
+                    break;
+                }
+            }
+            if (!$found) {
+                $this->client->createDatabase('inventory');
+            }
+
+            $found = false;
+            foreach ($this->client->inventory->listCollections as $collection) {
+                if ($collection->getName() === 'inventory') {
+                    $found = true;
+                    break;
+                }
+            }
+            if (!$found) {
+                $this->client->inventory->createCollection('inventory');
+            }
+
+            $this->init = true;
+        }
+
         // Return collection
         return $this->client->inventory->inventory;
     }
@@ -34,7 +65,8 @@ class DocumentStorage
      */
     public function getInventoryItem(string $id) : InventoryItem
     {
-        return $this->client->inventory->inventory->findOne(['_id' => MongoDB\BSON\ObjectId("$id")]);
+        $inventory = $this->getInventory();
+        return $inventory->findOne(['_id' => MongoDB\BSON\ObjectId("$id")]);
     }
 
     /**
@@ -44,7 +76,8 @@ class DocumentStorage
      */
     public function saveInventoryItem(InventoryItem $item)
     {
-        $result = $this->client->inventory->inventory->updateOne(
+        $inventory = $this->getInventory();
+        $result = $inventory->updateOne(
             ['_id' => $item->getId()],
             $item,
             ['upsert' => true]

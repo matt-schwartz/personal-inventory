@@ -8,13 +8,6 @@ services:
     ports:
       - 80:80
     volumes:
-      # Map the volumes to files we edit during development
-      # This leaves the vendor and other things set up during the container build inside the container
-      - ./config:/var/www/app/config
-      - ./src:/var/www/app/src
-      - ./templates:/var/www/app/templates
-      - ./tests:/var/www/app/tests
-      # Permanent data
       - ./data/images:/data/images
 
   mongodb:
