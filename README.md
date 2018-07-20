@@ -20,6 +20,8 @@ Security
 
 There is no included user authentication or other security. This isn't intended to run on the open internet.  *Caveat emptor*.
 
+Currently front-end libraries are linked via CDN. In the future we'll package these into the project so it can run entirely offline.
+
 Photos
 ------
 

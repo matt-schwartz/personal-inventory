@@ -2,20 +2,16 @@
 
 namespace App\Service;
 
+use MongoDB\Client as MongoDB;
 use App\Entity\InventoryItem;
 
 class DocumentStorage
 {
     /** MongoDB\Client */
-    protected $client;
+    protected $mongo;
 
     /** @var boolean Have we initialized the databases and collections? */
     protected $init = false;
-
-    public function __consruct()
-    {
-        $this->client = new MongoDB\Client($_ENV['DATABASE_URL']);
-    }
 
     /**
      * Get a reference to our inventory collection
@@ -24,38 +20,38 @@ class DocumentStorage
      */
     public function getInventory()
     {
-        if (!$this->client) {
-            throw new \RuntimeException('Error establishing connection to MongoDB');
+        if (!$this->mongo) {
+            $this->mongo = new MongoDB(getenv('DATABASE_URL'));
         }
-        if (!$this->init) {
-            // Create db if it doesn't exist
-            $found = false;
-            foreach ($this->client->listDatabases() as $db) {
-                if ($db->getName() === 'inventory') {
-                    $found = true;
-                    break;
-                }
-            }
-            if (!$found) {
-                $this->client->createDatabase('inventory');
-            }
+        // if (!$this->init) {
+        //     // Create db if it doesn't exist
+        //     $found = false;
+        //     foreach ($this->mongo->listDatabases() as $db) {
+        //         if ($db->getName() === 'inventory') {
+        //             $found = true;
+        //             break;
+        //         }
+        //     }
+        //     if (!$found) {
+        //         $this->mongo->createDatabase('inventory');
+        //     }
 
-            $found = false;
-            foreach ($this->client->inventory->listCollections as $collection) {
-                if ($collection->getName() === 'inventory') {
-                    $found = true;
-                    break;
-                }
-            }
-            if (!$found) {
-                $this->client->inventory->createCollection('inventory');
-            }
+        //     $found = false;
+        //     foreach ($this->mongo->inventory->listCollections as $collection) {
+        //         if ($collection->getName() === 'inventory') {
+        //             $found = true;
+        //             break;
+        //         }
+        //     }
+        //     if (!$found) {
+        //         $this->mongo->inventory->createCollection('inventory');
+        //     }
 
-            $this->init = true;
-        }
+        //     $this->init = true;
+        // }
 
         // Return collection
-        return $this->client->inventory->inventory;
+        return $this->mongo->inventory->inventory;
     }
 
     /**

@@ -2,9 +2,12 @@
 
 namespace App\Entity;
 
-class InventoryItem implements MongoDB\BSON\Persistable
+use MongoDB\BSON\ObjectId;
+use MongoDB\BSON\Persistable;
+
+class InventoryItem implements Persistable
 {
-    /** @var MongoDB\BSON\ObjectId */
+    /** @var \MongoDB\BSON\ObjectId */
     protected $id;
 
     /** @var string */
@@ -33,11 +36,11 @@ class InventoryItem implements MongoDB\BSON\Persistable
 
     public function __construct()
     {
-        $this->id = new MongoDB\BSON\ObjectId();
+        $this->id = new ObjectId();
     }
 
     /**
-     * Implementation of MongoDB\BSON\Persistable::bosonSerialize
+     * Implementation of \MongoDB\BSON\Persistable::bosonSerialize
      */
     public function bsonSerialize()
     {
@@ -81,7 +84,7 @@ class InventoryItem implements MongoDB\BSON\Persistable
         $this->name = $name;
     }
 
-    public function getName() : string
+    public function getName() : ?string
     {
         return $this->name;
     }
@@ -91,7 +94,7 @@ class InventoryItem implements MongoDB\BSON\Persistable
         $this->notes = $notes;
     }
 
-    public function getNotes() : string
+    public function getNotes() : ?string
     {
         return $this->notes;
     }
@@ -180,7 +183,7 @@ class InventoryItem implements MongoDB\BSON\Persistable
         $this->purchasePrice = $price;
     }
 
-    public function getPurchasePrice() : string
+    public function getPurchasePrice() : ?string
     {
         return $this->purchasePrice;
     }
@@ -199,7 +202,7 @@ class InventoryItem implements MongoDB\BSON\Persistable
         $this->value = $value;
     }
 
-    public function getValue() : string
+    public function getValue() : ?string
     {
         return $this->value;
     }
@@ -209,7 +212,7 @@ class InventoryItem implements MongoDB\BSON\Persistable
         $this->quantity = $quantity;
     }
 
-    public function getQuantity() : int
+    public function getQuantity() : ?int
     {
         return $this->quantity;
     }

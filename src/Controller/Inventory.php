@@ -25,7 +25,7 @@ class Inventory extends Controller
     public function listItems()
     {
         $items = $this->docs->getInventory()->find();
-        return $this->render('inventory/list.html.twig', ['items' => [$items]]);
+        return $this->render('inventory/list.html.twig', ['items' => $items]);
     }
 
     public function getItem($id)
@@ -50,6 +50,6 @@ class Inventory extends Controller
             ->add('save', SubmitType::class, ['label' => 'Save'])
             ->getForm();
 
-        return $this->render('inventory/edit.html.twig', ['form' => [$form->createView]]);
+        return $this->render('inventory/edit.html.twig', ['form' => $form->createView()]);
     }
 }

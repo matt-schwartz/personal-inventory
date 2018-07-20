@@ -4,14 +4,14 @@
 
 {% block body %}
     <ul>
-        {% for property in properties %}
+        {% for item in items %}
             <li>
-                <a href="{{ path('property_get', {'id': property.id}) }}">{{ property.name }}</a>
+                <a href="{{ path('inventory_get', {'id': item.id}) }}">{{ item.name }}</a>
             </li>
         {% endfor %}
     </ul>
 
-    <form method="GET" action="{{ path('property_add') }}">
+    <form method="GET" action="{{ path('inventory_add') }}">
         <button class="btn btn-primary" type="submit" name="action" value="add">Add</button>
     </form>
 {% endblock %}
