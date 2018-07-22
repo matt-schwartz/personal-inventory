@@ -1,0 +1,14 @@
+.sidebar {
+    border-top: 2px solid #11729880;
+    padding-top: 1rem;
+}
+
+main {
+    border-top: 2px solid #117298;
+    padding-top: 1rem;
+    width: 100%;
+}
+
+h1 {
+    font-size: 1.75rem;
+}

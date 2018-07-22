@@ -2,12 +2,31 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>{% block title %}Personal Inventory{% endblock %}</title>
+        <title>Inventory - {% block title %}Home{% endblock %}</title>
         <link href="https://stackpath.bootstrapcdn.com/bootswatch/4.1.2/lumen/bootstrap.min.css" rel="stylesheet" integrity="sha384-DpS/eLfynIHe4VoTvBOlpX0ZpfGcdiVqiuGV1HMseFS7alAFrE8UaFtVuynuQ0Nn" crossorigin="anonymous">
+        <link href="/inventory.css" rel="stylesheet">
         {% block stylesheets %}{% endblock %}
     </head>
     <body>
-        {% block body %}{% endblock %}
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col col-2 sidebar bg-secondary">
+                    <h3><a class="text-dark" href="/inventory">Inventory</a></h3>
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/inventory/Add">Add Item</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col">
+                    <main role="main">
+                        <h1>{{ block('title') }}</h1>
+                        {% block body %}{% endblock %}
+                    </main>
+                </div>
+            </div>
+        </div>
+
         {% block javascripts %}{% endblock %}
     </body>
 </html>

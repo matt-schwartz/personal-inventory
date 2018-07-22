@@ -8,6 +8,7 @@ use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\HttpFoundation\Request;
 
 use App\Entity\InventoryItem;
 use App\Service\DocumentStorage;
@@ -25,7 +26,17 @@ class Inventory extends Controller
     public function listItems()
     {
         $items = $this->docs->getInventory()->find();
-        return $this->render('inventory/list.html.twig', ['items' => $items]);
+        // If there are no items, bounce to the add page
+        $exists = false;
+        foreach ($items as $item) {
+            $exists = true;
+            break;
+        }
+        if ($exists) {
+            return $this->render('inventory/list.html.twig', ['items' => $items]);
+        } else {
+            return $this->redirectToRoute('inventory_add');
+        }
     }
 
     public function getItem($id)
@@ -33,23 +44,49 @@ class Inventory extends Controller
 
     }
 
-    public function editItem($id = null)
+    public function editItem(Request $request, $id = null)
     {
         if ($id) {
             $item = $this->docs->getInventoryItem($id);
+            if (!$item) {
+                throw $this->createNotFoundException('Item not found');
+            }
+            $mode = 'edit';
         } else {
             $item = new InventoryItem();
+            $mode = 'new';
         }
 
         $form = $this->createFormBuilder($item)
             ->add('name', TextType::class)
-            ->add('purchasePrice', MoneyType::class)
-            ->add('value', MoneyType::class, ['label' => 'Current value (per item)'])
+            ->add(
+                'purchasePrice', 
+                MoneyType::class, 
+                ['required' => false]
+            )
+            ->add(
+                'value', 
+                MoneyType::class, 
+                ['label' => 'Current value (per item)', 'required' => false]
+            )
             ->add('quantity', IntegerType::class)
-            ->add('notes', TextareaType::class)
-            ->add('save', SubmitType::class, ['label' => 'Save'])
+            ->add(
+                'notes', 
+                TextareaType::class,
+                ['required' => false])
             ->getForm();
 
-        return $this->render('inventory/edit.html.twig', ['form' => $form->createView()]);
+        $form->handleRequest($request);
+        
+        if ($form->isSubmitted() && $form->isValid()) {
+            $item = $form->getData();
+            $id = $this->docs->saveInventoryItem($item);
+            return $this->redirectToRoute('inventory_get', ['id' => $id]);
+        }
+
+        return $this->render(
+            'inventory/edit.html.twig', 
+            ['form' => $form->createView(), 'mode' => $mode]
+        );
     }
 }

@@ -72,9 +72,12 @@ class DocumentStorage
      */
     public function saveInventoryItem(InventoryItem $item)
     {
+        if (!$item) {
+            throw new \RuntimeException('Empty item can not be saved');
+        }
         $inventory = $this->getInventory();
-        $result = $inventory->updateOne(
-            ['_id' => $item->getId()],
+        $result = $inventory->replaceOne(
+            ['_id' => $item->getObjectId()],
             $item,
             ['upsert' => true]
         );

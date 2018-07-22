@@ -1,10 +1,12 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit Property{% endblock %}
+{% block title %}{{ mode|capitalize }} Item{% endblock %}
 
 {% block body %}
     {{ form_start(form) }}
     {{ form_widget(form) }}
+    <button type="submit" class="btn btn-primary" name="submit" value="submit">Save</button>
+    <button type="submit" class="btn btn-secondary" name="submit" value="submit_add">Save And Add Another</button>
     {{ form_end(form) }}
 {% endblock %}
 

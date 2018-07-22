@@ -29,7 +29,7 @@ class InventoryItem implements Persistable
     protected $value;
 
     /** @var int */
-    protected $quantity;
+    protected $quantity = 1;
 
     /** @var bool Soft delete */
     protected $deleted = false;
@@ -67,6 +67,16 @@ class InventoryItem implements Persistable
                 $this->$key = $value;
             }
         }
+    }
+
+    /**
+     * Get item's Mongo Object ID
+     * 
+     * @return ObjectId
+     */
+    public function getObjectId() : ObjectId
+    {
+        return $this->id;
     }
 
     /**
@@ -212,7 +222,7 @@ class InventoryItem implements Persistable
         $this->quantity = $quantity;
     }
 
-    public function getQuantity() : ?int
+    public function getQuantity() : int
     {
         return $this->quantity;
     }
