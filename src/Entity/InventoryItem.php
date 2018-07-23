@@ -2,14 +2,8 @@
 
 namespace App\Entity;
 
-use MongoDB\BSON\ObjectId;
-use MongoDB\BSON\Persistable;
-
-class InventoryItem implements Persistable
+class InventoryItem extends Persistable
 {
-    /** @var \MongoDB\BSON\ObjectId */
-    protected $id;
-
     /** @var string */
     protected $name;
 
@@ -33,61 +27,6 @@ class InventoryItem implements Persistable
 
     /** @var bool Soft delete */
     protected $deleted = false;
-
-    public function __construct()
-    {
-        $this->id = new ObjectId();
-    }
-
-    /**
-     * Implementation of \MongoDB\BSON\Persistable::bosonSerialize
-     */
-    public function bsonSerialize()
-    {
-        $data = ['_id' => $this->id];
-
-        $reflection = new \ReflectionObject($this);
-        foreach ($reflection->getProperties() as $property) {
-            $name = $property->getName();
-            if ($name !== 'id') {
-                $data[$name] = $this->$name;
-            }
-        }
-    }
-
-    /**
-     * Implementation of MongoDB\BSON\Persistable::bosonUnserialize
-     */
-    public function bsonUnserialize(array $data)
-    {
-        foreach ($data as $key => $value) {
-            if ($key === '_id') {
-                $this->id = new MongoDB\BSON\ObjectId($value);
-            } else {
-                $this->$key = $value;
-            }
-        }
-    }
-
-    /**
-     * Get item's Mongo Object ID
-     * 
-     * @return ObjectId
-     */
-    public function getObjectId() : ObjectId
-    {
-        return $this->id;
-    }
-
-    /**
-     * Get item ID
-     * 
-     * @return string
-     */
-    public function getId() : string
-    {
-        return (string) $this->id;
-    }
 
     public function setName(string $name) 
     {

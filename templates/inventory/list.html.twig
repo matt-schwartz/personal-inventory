@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Properties{% endblock %}
+{% block title %}Items{% endblock %}
 
 {% block body %}
     <ul>
@@ -8,8 +8,10 @@
             <li>
                 <a href="{{ path('inventory_get', {'id': item.id}) }}">{{ item.name }}</a>
             </li>
+        {% else %}
+            <p>No items. Would you like to <a href="{{ path('inventory_add') }}">add one</a>?</p>
         {% endfor %}
     </ul>
 
-    <a class="btn btn-primary" href="/inventory/add">Add</button>
+    <a class="btn btn-primary" href="{{ path('inventory_add') }}">Add</a>
 {% endblock %}

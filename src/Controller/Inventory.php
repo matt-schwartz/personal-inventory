@@ -26,17 +26,7 @@ class Inventory extends Controller
     public function listItems()
     {
         $items = $this->docs->getInventory()->find();
-        // If there are no items, bounce to the add page
-        $exists = false;
-        foreach ($items as $item) {
-            $exists = true;
-            break;
-        }
-        if ($exists) {
-            return $this->render('inventory/list.html.twig', ['items' => $items]);
-        } else {
-            return $this->redirectToRoute('inventory_add');
-        }
+        return $this->render('inventory/list.html.twig', ['items' => $items]);
     }
 
     public function getItem($id)
@@ -81,7 +71,11 @@ class Inventory extends Controller
         if ($form->isSubmitted() && $form->isValid()) {
             $item = $form->getData();
             $id = $this->docs->saveInventoryItem($item);
-            return $this->redirectToRoute('inventory_get', ['id' => $id]);
+            if ($request->request->get('submit', 'submit') === 'submit_add') {
+                return $this->redirectToRoute('inventory_add');
+            } else {
+                return $this->redirectToRoute('inventory_list');
+            }
         }
 
         return $this->render(

@@ -10,8 +10,15 @@ class DocumentStorage
     /** MongoDB\Client */
     protected $mongo;
 
-    /** @var boolean Have we initialized the databases and collections? */
-    protected $init = false;
+    /**
+     * Set up
+     */
+    protected function init()
+    {
+        if (!$this->mongo) {
+            $this->mongo = new MongoDB(getenv('DATABASE_URL'));
+        }
+    }
 
     /**
      * Get a reference to our inventory collection
@@ -20,37 +27,7 @@ class DocumentStorage
      */
     public function getInventory()
     {
-        if (!$this->mongo) {
-            $this->mongo = new MongoDB(getenv('DATABASE_URL'));
-        }
-        // if (!$this->init) {
-        //     // Create db if it doesn't exist
-        //     $found = false;
-        //     foreach ($this->mongo->listDatabases() as $db) {
-        //         if ($db->getName() === 'inventory') {
-        //             $found = true;
-        //             break;
-        //         }
-        //     }
-        //     if (!$found) {
-        //         $this->mongo->createDatabase('inventory');
-        //     }
-
-        //     $found = false;
-        //     foreach ($this->mongo->inventory->listCollections as $collection) {
-        //         if ($collection->getName() === 'inventory') {
-        //             $found = true;
-        //             break;
-        //         }
-        //     }
-        //     if (!$found) {
-        //         $this->mongo->inventory->createCollection('inventory');
-        //     }
-
-        //     $this->init = true;
-        // }
-
-        // Return collection
+        $this->init();
         return $this->mongo->inventory->inventory;
     }
 
@@ -84,4 +61,16 @@ class DocumentStorage
         return (string) $result->getUpsertedId();
     }
 
+    /**
+     * Get tags by type
+     * 
+     * @param string $type One of TAG_CATEGORY_*
+     * @return MongoDB\Collection
+     */
+    public function getTags($type)
+    {
+        $this->init();
+        $collection = $this->mongo->inventory->tags;
+        return $collection->find(['type' => $type]);
+    }
 }
