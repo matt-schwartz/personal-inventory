@@ -18,3 +18,7 @@ main {
 h1 {
     font-size: 1.75rem;
 }
+
+.item th[scope=row] {
+    width: 15rem;
+}

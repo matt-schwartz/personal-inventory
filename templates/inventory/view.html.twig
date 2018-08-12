@@ -17,7 +17,7 @@
     {% endmacro %}
     {% import _self as table %}
 
-    <table>
+    <table class="table table-borderless item">
         <tbody>
             {{ table.row('Quantity', item.quantity) }}
             {{ table.row('Purchase Price (x 1)', item.purchasePrice, true) }}

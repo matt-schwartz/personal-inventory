@@ -3,15 +3,19 @@
 {% block title %}Items{% endblock %}
 
 {% block body %}
-    <ul>
-        {% for item in items %}
-            <li>
-                <a href="{{ path('inventory_get', {'id': item.id}) }}">{{ item.name }}</a>
-            </li>
-        {% else %}
-            <p>No items. Would you like to <a href="{{ path('inventory_add') }}">add one</a>?</p>
-        {% endfor %}
-    </ul>
+    <table class="table table-striped table-hover">
+        <tbody>
+            {% for item in items %}
+                <tr>
+                    <td><a href="{{ path('inventory_get', {'id': item.id}) }}">{{ item.name }}</a></td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td>No items. Would you like to <a href="{{ path('inventory_add') }}">add one</a>?</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 
     <a class="btn btn-primary" href="{{ path('inventory_add') }}">Add</a>
 {% endblock %}
