@@ -1,10 +1,10 @@
 Personal Inventory Web Application
 ==================================
 
-This is a web app for managing a personal inventory or collection. It's meant to be run on your computer or home network.  This app is great for
+This is a web application for managing a personal inventory or collection. It's meant to be run on your computer or home network.  It's great for
 
 - Maintaining a home inventory for insurance purposes
-- Keeping track of home electronics and easily ordering more components
+- Keeping track of home electronics
 - Organizing a coin, stamp, or other collection
 
 There are advantages to using this system over a simple spreadsheet:
@@ -12,8 +12,6 @@ There are advantages to using this system over a simple spreadsheet:
 - Quickly browse by type or location
 - Incorporate photos and images
 - Mobile friendly
-- Link to online stores for ordering more of an item
-- PDF export useful for insurance purposes
 
 Security
 --------
@@ -37,8 +35,19 @@ Application data is stored using MongoDB in the `/data/db` directory.  Images ar
 Running the Application
 -----------------------
 
-The only requirement to run the application is docker and docker-compose.  To run the personal inventory manager on a single desktop computer, run `./bin/run.sh`. Once it's complete open http://localhost in your favorite browser.
+The only requirement to run the application is docker and docker-compose.  To run the personal inventory manager on a single desktop computer:
 
-On first run the startup script will download dependencies. On subsequent runs the script will skip this and start up very quickly.
+1. Run `./bin/setup.sh`. This only needs to be run once or after downloading updates.
+1. Run `docker-compose up`.  Add `-d` to run it in the background.
+1. Open http://localhost in your favorite browser.
 
-For any other type of setup, such as on a home network Linux server, edit or override the settings in `docker-compose.yaml`.
+For any other type of setup, such as on a home network server, edit or override the settings in `docker-compose.yaml` and `docker/web/Dockerfile`.
+
+TODO
+----
+
+In the future we plan on including 
+
+- PDF export useful for insurance purposes
+- Links to various online stores to make it easy to order more of an item.  
+- Configurable depreciation schedule to estimate current values

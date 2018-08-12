@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use MongoDB\Client as MongoDB;
+use MongoDB\BSON\ObjectId;
 use App\Entity\InventoryItem;
 
 class DocumentStorage
@@ -39,7 +40,7 @@ class DocumentStorage
     public function getInventoryItem(string $id) : InventoryItem
     {
         $inventory = $this->getInventory();
-        return $inventory->findOne(['_id' => MongoDB\BSON\ObjectId("$id")]);
+        return $inventory->findOne(['_id' => new ObjectId("$id")]);
     }
 
     /**

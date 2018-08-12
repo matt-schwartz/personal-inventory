@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ item.name }}{% endblock %}
+
+{% block body %}
+    {% macro row(header, data, currency) %}
+        {% if data %}
+            <tr>
+                <th scope="row">{{ header }}</th>
+                {% if currency %}
+                    <td>{{ data|localizedcurrency('USD') }}</td>
+                {% else %}
+                    <td>{{ data }}</td>                
+                {% endif %}
+            </tr>
+        {% endif %}
+    {% endmacro %}
+    {% import _self as table %}
+
+    <table>
+        <tbody>
+            {{ table.row('Quantity', item.quantity) }}
+            {{ table.row('Purchase Price (x 1)', item.purchasePrice, true) }}
+            {{ table.row('Current Value (x 1)', item.value, true) }}
+            {% if item.quantity > 1 %}
+                {{ table.row("Purchase Price (x #{item.quantity})", item.totalPurchasePrice, true) }}
+                {{ table.row("Current Value (x #{item.quantity})", item.totalValue, true) }}
+            {% endif %}
+            {{ table.row('Notes', item.notes) }}
+        </tbody>
+    </table>
+
+    <a class="btn btn-primary" href="{{ path('inventory_edit', {'id': item.id}) }}">Edit</a>
+{% endblock %}
+

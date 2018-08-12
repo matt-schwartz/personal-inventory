@@ -15,4 +15,5 @@ RUN apt-get update 1> /dev/null \
 # PHP
 RUN pecl install mongodb-1.5.1 1> /dev/null \
     && docker-php-ext-enable mongodb \
+    && docker-php-ext-install bcmath 1> /dev/null \
     && chown -R www-data:www-data /var/www/app

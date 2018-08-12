@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 use App\Entity\InventoryItem;
 use App\Service\DocumentStorage;
 
-class Inventory extends Controller
+class InventoryController extends Controller
 {
     /** @var DocumentStorage */
     protected $docs;
@@ -31,7 +31,14 @@ class Inventory extends Controller
 
     public function getItem($id)
     {
-
+        $item = $this->docs->getInventoryItem($id);
+        if (!$item) {
+            throw $this->createNotFoundException('Item not found');
+        }
+        return $this->render(
+            'inventory/view.html.twig', 
+            ['item' => $item]
+        );
     }
 
     public function editItem(Request $request, $id = null)
@@ -52,7 +59,7 @@ class Inventory extends Controller
             ->add(
                 'purchasePrice', 
                 MoneyType::class, 
-                ['required' => false]
+                ['label' => 'Purchase price (per item)', 'required' => false]
             )
             ->add(
                 'value', 

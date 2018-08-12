@@ -138,6 +138,21 @@ class InventoryItem extends Persistable
     }
 
     /**
+     * Get total purchase price (individual price * quantity)
+     * 
+     * @return string|null
+     */
+    public function getTotalPurchasePrice() : ?string
+    {
+        $price = null;
+        if ($this->purchasePrice && $this->quantity) {
+            $price = \bcmul($this->purchasePrice, $this->quantity);
+        }
+
+        return $price;
+    }
+
+    /**
      * Set the individual value of an item
      * 
      * @param string $value
@@ -154,6 +169,21 @@ class InventoryItem extends Persistable
     public function getValue() : ?string
     {
         return $this->value;
+    }
+
+    /**
+     * Get total value (individual value * quantity)
+     * 
+     * @return string|null
+     */
+    public function getTotalValue() : ?string
+    {
+        $value = null;
+        if ($this->value && $this->quantity) {
+            $value = \bcmul($this->value, $this->quantity);
+        }
+
+        return $value;
     }
 
     public function setQuantity(int $quantity)

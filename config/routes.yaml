@@ -4,14 +4,14 @@ index:
 
 inventory_list:
     path: /inventory
-    controller: App\Controller\Inventory::listItems
+    controller: App\Controller\InventoryController::listItems
 inventory_add:
     path: /inventory/add
-    controller: App\Controller\Inventory::editItem
+    controller: App\Controller\InventoryController::editItem
 inventory_get:
     path: /inventory/{id}
-    controller: App\Controller\Inventory::getItem
+    controller: App\Controller\InventoryController::getItem
 inventory_edit:
     path: /inventory/{id}/edit
-    controller: App\Controller\Inventory::editItem
+    controller: App\Controller\InventoryController::editItem
 
