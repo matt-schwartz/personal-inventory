@@ -117,6 +117,7 @@ class InventoryItem extends Persistable
      */
     public function getTypes() : array
     {
+        dump($this->types);
         return $this->types;
     }
 

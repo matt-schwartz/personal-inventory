@@ -40,6 +40,8 @@ abstract class Persistable implements \MongoDB\BSON\Persistable
         foreach ($data as $key => $value) {
             if ($key === '_id') {
                 $this->id = new ObjectId($value);
+            } elseif (is_object($value) && is_a($value, 'ArrayObject')) {
+                $this->$key = $value->getArrayCopy();
             } else {
                 $this->$key = $value;
             }

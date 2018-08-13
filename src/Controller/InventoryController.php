@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -11,6 +12,7 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 
 use App\Entity\InventoryItem;
+use App\Entity\Tag;
 use App\Service\DocumentStorage;
 
 class InventoryController extends Controller
@@ -56,6 +58,7 @@ class InventoryController extends Controller
 
         $form = $this->createFormBuilder($item)
             ->add('name', TextType::class)
+            ->add('quantity', IntegerType::class)
             ->add(
                 'purchasePrice', 
                 MoneyType::class, 
@@ -66,7 +69,19 @@ class InventoryController extends Controller
                 MoneyType::class, 
                 ['label' => 'Current value (per item)', 'required' => false]
             )
-            ->add('quantity', IntegerType::class)
+            ->add(
+                'types',
+                ChoiceType::class,
+                [
+                    'label' => 'Type / Tags',
+                    'attr' => ['class' => 'tags'],
+                    'choices' => $this->docs->getTags(Tag::TAG_CATEGORY_TYPE),
+                    'expanded' => false,
+                    'help' => 'Use comma to create new tags',
+                    'multiple' => true,
+                    'required' => false
+                ]
+            )
             ->add(
                 'notes', 
                 TextareaType::class,

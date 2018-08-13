@@ -50,4 +50,9 @@ class Tag extends Persistable
     {
         return $this->count;
     }
+
+    public function __toString()
+    {
+        return $this->name;
+    }
 }
