@@ -103,21 +103,20 @@ class InventoryItem extends Persistable
     public function setTypes(array $types) 
     {
         foreach ($types as $type) {
-            if (!is_string($type)) {
-                throw new \RuntimeException('All item types must be strings');
+            if (is_object($type)) {
+                $type = (string) $type;
             }
         }
         $this->types = $types;
     }
 
     /**
-     * Get all types associated with this item
+     * Get all types (as strings) associated with this item
      * 
      * @return string[]
      */
     public function getTypes() : array
     {
-        dump($this->types);
         return $this->types;
     }
 

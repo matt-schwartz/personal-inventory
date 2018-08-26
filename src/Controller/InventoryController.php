@@ -14,6 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
 use App\Entity\InventoryItem;
 use App\Entity\Tag;
 use App\Service\DocumentStorage;
+use App\Service\TagChoiceLoader;
 
 class InventoryController extends Controller
 {
@@ -27,7 +28,7 @@ class InventoryController extends Controller
 
     public function listItems()
     {
-        $items = $this->docs->getInventory()->find();
+        $items = $this->docs->getInventoryItems();
         return $this->render('inventory/list.html.twig', ['items' => $items]);
     }
 
@@ -75,9 +76,9 @@ class InventoryController extends Controller
                 [
                     'label' => 'Type / Tags',
                     'attr' => ['class' => 'tags'],
-                    'choices' => $this->docs->getTags(Tag::TAG_CATEGORY_TYPE),
+                    'choices' => $this->getTags($request, 'types', Tag::CATEGORY_ITEM_TYPE),
                     'expanded' => false,
-                    'help' => 'Use comma to create new tags',
+                    'help' => 'Hit enter or comma to create new tags',
                     'multiple' => true,
                     'required' => false
                 ]
@@ -93,10 +94,13 @@ class InventoryController extends Controller
         if ($form->isSubmitted() && $form->isValid()) {
             $item = $form->getData();
             $id = $this->docs->saveInventoryItem($item);
+            $this->docs->saveTags(Tag::CATEGORY_ITEM_TYPE, $item->getTypes());
             if ($request->request->get('submit', 'submit') === 'submit_add') {
                 return $this->redirectToRoute('inventory_add');
-            } else {
+            } elseif ($request->query->get('return_to', '') === 'list') {
                 return $this->redirectToRoute('inventory_list');
+            } else {
+                return $this->redirectToRoute('inventory_get', ['id' => $id]);
             }
         }
 
@@ -104,5 +108,26 @@ class InventoryController extends Controller
             'inventory/edit.html.twig', 
             ['form' => $form->createView(), 'mode' => $mode]
         );
+    }
+
+    /**
+     * Get tags, including any new tags POSTed through the form
+     * 
+     * @param Request $request HTTP request
+     * @param string $field Form and entity field name
+     * @param string $tagCategory
+     * @return string[]
+     */
+    private function getTags(Request $request, $field, $tagCategory)
+    {
+        $tags = [];
+        if ($request->getMethod() === 'POST') {
+            $formInput = $request->request->get('form');
+            $tags = array_combine($formInput[$field], $formInput[$field]);
+        }
+        foreach ($this->docs->getTags($tagCategory) as $tag) {
+            $tags[(string) $tag] = (string) $tag;
+        }
+        return $tags;
     }
 }

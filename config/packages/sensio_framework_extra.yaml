@@ -1,0 +1,7 @@
+sensio_framework_extra:
+    router:      { annotations: false }
+    request:     { converters: true, auto_convert: true }
+    view:        { annotations: false }
+    cache:       { annotations: true }
+    security:    { annotations: true }
+    # psr_message: { enabled: true } # Defaults to true if the PSR-7 bridge is installed

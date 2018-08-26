@@ -4,11 +4,11 @@ namespace App\Entity;
 
 class Tag extends Persistable
 {
-    const TAG_CATEGORY_LOCATION = 'location';
-    const TAG_CATEGORY_TYPE = 'type';
+    const CATEGORY_ITEM_LOCATION = 'Item location';
+    const CATEGORY_ITEM_TYPE = 'Item type';
 
     /** @var string Tag type, one of TAG_CATEGORY_* */
-    protected $type = self::TAG_CATEGORY_TYPE;
+    protected $category = self::CATEGORY_ITEM_TYPE;
 
     /** @var string */
     protected $name = '';
@@ -16,14 +16,14 @@ class Tag extends Persistable
     /** @var int */
     protected $count = 0;
 
-    public function setType(string $type) 
+    public function setCategory(string $category) 
     {
-        $this->type = $type;
+        $this->category = $category;
     }
 
-    public function getType() : string
+    public function getCategory() : string
     {
-        return $this->type;
+        return $this->category;
     }
 
     public function setName(string $name) 
