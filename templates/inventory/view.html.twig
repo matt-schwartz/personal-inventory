@@ -26,6 +26,9 @@
                 {{ table.row("Purchase Price (x #{item.quantity})", item.totalPurchasePrice, true) }}
                 {{ table.row("Current Value (x #{item.quantity})", item.totalValue, true) }}
             {% endif %}
+            {# TODO: Make tags and locations links to inventory list with filter on tag #}
+            {{ table.row('Types / Tags', item.types|join(', ')) }}
+            {{ table.row('Location(s)', item.locations|join(', ')) }}
             {{ table.row('Notes', item.notes) }}
         </tbody>
     </table>

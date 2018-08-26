@@ -49,7 +49,7 @@ class DocumentStorage
      */
     public function getInventoryItems($filter = []) : iterable
     {
-        $this->getInventoryCollection()->find($filter);
+        return $this->getInventoryCollection()->find($filter);
     }
 
     /**
@@ -83,7 +83,7 @@ class DocumentStorage
     }
 
     /**
-     * Get tags by type
+     * Get tags by category
      * 
      * @param string $category One of CATEGORY_*
      * @return MongoDB\Driver\Cursor
@@ -93,6 +93,42 @@ class DocumentStorage
         $this->init();
         $collection = $this->getTagCollection();
         return $collection->find(['category' => $category]);
+    }
+
+    /**
+     * Get "top" 5 tags by category
+     * 
+     * @param string $category One of CATEGORY_*
+     * @return MongoDB\Driver\Cursor
+     */
+    public function getTopTags(string $category) : iterable
+    {
+        $this->init();
+        $collection = $this->getTagCollection();
+        return $collection->find(
+            ['category' => $category],
+            ['limit' => 5, 'sort' => ['count' => -1]]
+        );
+    }
+
+    /**
+     * Get "top" 5 type tags
+     * 
+     * @return MongoDB\Driver\Cursor
+     */
+    public function getTopTypeTags() : iterable
+    {
+        return $this->getTopTags(Tag::CATEGORY_ITEM_TYPE);
+    }
+
+    /**
+     * Get "top" 5 location tags
+     * 
+     * @return MongoDB\Driver\Cursor
+     */
+    public function getTopLocationTags() : iterable
+    {
+        return $this->getTopTags(Tag::CATEGORY_ITEM_LOCATION);
     }
 
     /**

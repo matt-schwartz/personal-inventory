@@ -7,18 +7,16 @@ This is a web application for managing a personal inventory or collection. It's 
 - Keeping track of home electronics
 - Organizing a coin, stamp, or other collection
 
-There are advantages to using this system over a simple spreadsheet:
+Advantages to using this system over a simple spreadsheet:
 
 - Quickly browse by type or location
 - Incorporate photos and images
-- Mobile friendly
+- Comfortabe browsing and editing on a mobile device
 
 Security
 --------
 
-There is no included user authentication or other security. This isn't intended to run on the open internet.  *Caveat emptor*.
-
-Currently front-end libraries are linked via CDN. In the future we'll package these into the project so it can run entirely offline.
+There is no included user authentication, data encryption, or other security. This isn't intended to run on the open internet.  *Caveat emptor*.
 
 Photos
 ------
@@ -41,7 +39,7 @@ The only requirement to run the application is docker and docker-compose.  To ru
 1. Run `docker-compose up`.  Add `-d` to run it in the background.
 1. Open http://localhost in your favorite browser.
 
-For any other type of setup, such as on a home network server, edit or override the settings in `docker-compose.yaml` and `docker/web/Dockerfile`.
+For any other type of setup, such as on a home network server, edit or override the settings in `docker-compose.yaml` and `docker/web/Dockerfile`.  To point to a MongoDB server other than the one included, edit the `.env` file.  For development it's handy to set `APP_ENV=dev` in `.env` to get access to the Symfony framework's profiler and extra debugging info.
 
 TODO
 ----

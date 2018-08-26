@@ -7,29 +7,57 @@
         <link href="/vendor/select2.min.css" rel="stylesheet">
         <link href="/inventory.css" rel="stylesheet">
         <script src="/vendor/jquery.min.js" type="text/javascript"></script>
+        <script src="/vendor/bootstrap.min.js" type="text/javascript"></script>
         <script src="/vendor/select2.min.js" type="text/javascript"></script>
         <script src="/inventory.js" type="text/javascript"></script>
         {% block stylesheets %}{% endblock %}
     </head>
     <body>
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col col-2 sidebar bg-secondary">
-                    <h3><a class="text-dark" href="/inventory">Inventory</a></h3>
-                    <ul class="nav flex-column">
-                        <li class="nav-item">
-                            <a class="nav-link" href="/inventory/add">Add Item</a>
-                        </li>
-                    </ul>
-                </div>
-                <div class="col">
-                    <main role="main">
-                        <h1>{{ block('title') }}</h1>
-                        {% block body %}{% endblock %}
-                    </main>
-                </div>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="/">Inventory</a>
+            <button class="navbar-toggler" 
+                    type="button" 
+                    data-toggle="collapse" 
+                    data-target="#navbarSupportedContent" 
+                    aria-controls="navbarSupportedContent" 
+                    aria-expanded="false" 
+                    aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="{{ path('inventory_add') }}">Add</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" 
+                            href="#" 
+                            id="navbarDropdown" 
+                            role="button" 
+                            data-toggle="dropdown" 
+                            aria-haspopup="true" 
+                            aria-expanded="false">
+                            Tags
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            {% for tag in docs.getTopTypeTags %}
+                                {# TODO: Pass tag to list page and filter #}
+                                <a class="dropdown-item" href="{{ path('inventory_list') }}">{{ tag }}</a>
+                            {% endfor %}
+                            <div class="dropdown-divider"></div>
+                            {# TODO: Make a tag list page #}
+                            <a class="dropdown-item" href="#">More...</a>
+                        </div>
+                    </li>
+                </ul>
             </div>
-        </div>
+        </nav>
+
+        <main role="main" class="px-1 py-1 px-md-3 py-md-4">
+            <h1>{{ block('title') }}</h1>
+            {% block body %}{% endblock %}
+        </main>
 
         {% block javascripts %}{% endblock %}
     </body>

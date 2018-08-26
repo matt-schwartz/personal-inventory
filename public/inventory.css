@@ -2,16 +2,8 @@ body {
     font-size: 1rem;
 }
 
-.sidebar {
-    border-top: 2px solid #11729880;
-    min-height: 400px;
-    padding-top: 1rem;
-}
-
 main {
     border-top: 2px solid #117298;
-    padding-bottom: 2rem;
-    padding-top: 1rem;
     width: 100%;
 }
 

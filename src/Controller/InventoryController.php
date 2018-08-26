@@ -57,6 +57,14 @@ class InventoryController extends Controller
             $mode = 'new';
         }
 
+        $tagAttributes = [
+            'attr' => ['class' => 'tags'],
+            'expanded' => false,
+            'help' => 'Hit enter or comma to create new tags',
+            'multiple' => true,
+            'required' => false
+        ];
+
         $form = $this->createFormBuilder($item)
             ->add('name', TextType::class)
             ->add('quantity', IntegerType::class)
@@ -75,13 +83,16 @@ class InventoryController extends Controller
                 ChoiceType::class,
                 [
                     'label' => 'Type / Tags',
-                    'attr' => ['class' => 'tags'],
                     'choices' => $this->getTags($request, 'types', Tag::CATEGORY_ITEM_TYPE),
-                    'expanded' => false,
-                    'help' => 'Hit enter or comma to create new tags',
-                    'multiple' => true,
-                    'required' => false
-                ]
+                ] + $tagAttributes
+            )
+            ->add(
+                'locations',
+                ChoiceType::class,
+                [
+                    'label' => 'Location(s)',
+                    'choices' => $this->getTags($request, 'locations', Tag::CATEGORY_ITEM_LOCATION),
+                ] + $tagAttributes
             )
             ->add(
                 'notes', 
@@ -95,6 +106,7 @@ class InventoryController extends Controller
             $item = $form->getData();
             $id = $this->docs->saveInventoryItem($item);
             $this->docs->saveTags(Tag::CATEGORY_ITEM_TYPE, $item->getTypes());
+            $this->docs->saveTags(Tag::CATEGORY_ITEM_LOCATION, $item->getLocations());
             if ($request->request->get('submit', 'submit') === 'submit_add') {
                 return $this->redirectToRoute('inventory_add');
             } elseif ($request->query->get('return_to', '') === 'list') {
