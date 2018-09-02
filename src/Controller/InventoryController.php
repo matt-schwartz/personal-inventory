@@ -26,10 +26,20 @@ class InventoryController extends Controller
         $this->docs = $docs;
     }
 
-    public function listItems()
+    public function listItems(Request $request, string $category = null, string $tag = null)
     {
-        $items = $this->docs->getInventoryItems();
-        return $this->render('inventory/list.html.twig', ['items' => $items]);
+        if ($category && $tag) {
+            $items = $this->docs->getInventoryItemsByTag($category, $tag);
+        } else {
+            $items = $this->docs->getInventoryItems();
+        }
+        return $this->render(
+            'inventory/list.html.twig', 
+            [
+                'items' => $items,
+                'tag' => $tag
+            ]
+        );
     }
 
     public function getItem($id)

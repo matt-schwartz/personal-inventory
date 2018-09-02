@@ -30,26 +30,27 @@
                     <li class="nav-item active">
                         <a class="nav-link" href="{{ path('inventory_add') }}">Add</a>
                     </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" 
-                            href="#" 
-                            id="navbarDropdown" 
-                            role="button" 
-                            data-toggle="dropdown" 
-                            aria-haspopup="true" 
-                            aria-expanded="false">
-                            Tags
-                        </a>
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            {% for tag in docs.getTopTypeTags %}
-                                {# TODO: Pass tag to list page and filter #}
-                                <a class="dropdown-item" href="{{ path('inventory_list') }}">{{ tag }}</a>
-                            {% endfor %}
-                            <div class="dropdown-divider"></div>
-                            {# TODO: Make a tag list page #}
-                            <a class="dropdown-item" href="#">More...</a>
-                        </div>
-                    </li>
+                    {% for category, categoryTitle in {'types': 'Type', 'locations': 'Location'} %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" 
+                                href="#" 
+                                id="navbarDropdown" 
+                                role="button" 
+                                data-toggle="dropdown" 
+                                aria-haspopup="true" 
+                                aria-expanded="false">
+                                {{ categoryTitle }}
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                {% for tag in docs.getTopTags(category) %}
+                                    <a class="dropdown-item" href="{{ path('inventory_list_by_tag', {'category': category, 'tag': tag}) }}">{{ tag }}</a>
+                                {% endfor %}
+                                <div class="dropdown-divider"></div>
+                                {# TODO: Make a tag list page #}
+                                <a class="dropdown-item" href="#">More...</a>
+                            </div>
+                        </li>
+                    {% endfor %}
                 </ul>
             </div>
         </nav>

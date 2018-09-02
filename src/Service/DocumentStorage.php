@@ -41,15 +41,32 @@ class DocumentStorage
     }
 
     /**
-     * Get inventory items with an optional filter
-     * 
-     * TODO: Sort
+     * Get inventory items
      * 
      * @return MongoDB\Driver\Cursor
      */
-    public function getInventoryItems($filter = []) : iterable
+    public function getInventoryItems() : iterable
     {
-        return $this->getInventoryCollection()->find($filter);
+        // TODO: Sort
+        return $this->getInventoryCollection()->find();
+    }
+
+    /**
+     * Get inventory items by tag name
+     * 
+     * @param string $category One of Tag::CATEGORY_*
+     * @param string $tag Tag name
+     * @return MongoDB\Driver\Cursor
+     */
+    public function getInventoryItemsByTag(string $category, string $tag) : iterable
+    {
+        // TODO: Sort
+        return $this->getInventoryCollection()->find([
+            $category => [
+                '$regex' => '^' . $tag . '$',
+                '$options' => 'i'
+            ]
+        ]);
     }
 
     /**
@@ -185,6 +202,8 @@ class DocumentStorage
     /**
      * Get a Tag entity by name
      * 
+     * @param string $category One of Tag::CATEGORY_*
+     * @param string $name
      * @return Tag|null
      */
     public function getTagByName(string $category, string $name) : ?Tag
@@ -194,6 +213,7 @@ class DocumentStorage
         return $collection->findOne(
             [
                 'category' => $category, 
+                // Case insensitive indexed search
                 'name' => [
                     '$regex' => '^' . $name . '$',
                     '$options' => 'i'

@@ -5,6 +5,9 @@ index:
 inventory_list:
     path: /inventory
     controller: App\Controller\InventoryController::listItems
+inventory_list_by_tag:
+    path: /inventory/tags/{category}/{tag}
+    controller: App\Controller\InventoryController::listItems
 inventory_add:
     path: /inventory/add
     controller: App\Controller\InventoryController::editItem
@@ -14,4 +17,3 @@ inventory_get:
 inventory_edit:
     path: /inventory/{id}/edit
     controller: App\Controller\InventoryController::editItem
-

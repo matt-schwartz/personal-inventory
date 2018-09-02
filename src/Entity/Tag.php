@@ -4,8 +4,9 @@ namespace App\Entity;
 
 class Tag extends Persistable
 {
-    const CATEGORY_ITEM_LOCATION = 'Item location';
-    const CATEGORY_ITEM_TYPE = 'Item type';
+    // Note these match item fields for convenience
+    const CATEGORY_ITEM_LOCATION = 'locations';
+    const CATEGORY_ITEM_TYPE = 'types';
 
     /** @var string Tag type, one of TAG_CATEGORY_* */
     protected $category = self::CATEGORY_ITEM_TYPE;
