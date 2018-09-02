@@ -105,8 +105,6 @@ class InventoryController extends Controller
         if ($form->isSubmitted() && $form->isValid()) {
             $item = $form->getData();
             $id = $this->docs->saveInventoryItem($item);
-            $this->docs->saveTags(Tag::CATEGORY_ITEM_TYPE, $item->getTypes());
-            $this->docs->saveTags(Tag::CATEGORY_ITEM_LOCATION, $item->getLocations());
             if ($request->request->get('submit', 'submit') === 'submit_add') {
                 return $this->redirectToRoute('inventory_add');
             } elseif ($request->query->get('return_to', '') === 'list') {
@@ -135,7 +133,9 @@ class InventoryController extends Controller
         $tags = [];
         if ($request->getMethod() === 'POST') {
             $formInput = $request->request->get('form');
-            $tags = array_combine($formInput[$field], $formInput[$field]);
+            if (array_key_exists($field, $formInput)) {
+                $tags = array_combine($formInput[$field], $formInput[$field]);
+            }
         }
         foreach ($this->docs->getTags($tagCategory) as $tag) {
             $tags[(string) $tag] = (string) $tag;

@@ -74,31 +74,82 @@ class DocumentStorage
             throw new \RuntimeException('Empty item can not be saved');
         }
         $inventory = $this->getInventoryCollection();
-        $result = $inventory->replaceOne(
+        // Get the original tags so we can update their counters
+        $originalItem = $this->getInventoryItem($item->getId());
+        $originalTypes = [];
+        $originalLocations = [];
+        if ($originalItem) {
+            $originalTypes = $originalItem->getTypes();
+            $originalLocations = $originalItem->getLocations();
+        }
+        $inventory->replaceOne(
             ['_id' => $item->getObjectId()],
             $item,
             ['upsert' => true]
         );
+        $this->saveInventoryItemTags(Tag::CATEGORY_ITEM_TYPE, $originalTypes, $item->getTypes());
+        $this->saveInventoryItemTags(Tag::CATEGORY_ITEM_LOCATION, $originalLocations, $item->getLocations());
+    
         return (string) $item->getId();
     }
 
     /**
-     * Get tags by category
+     * Save tag entities associated with an inventory item being updated
      * 
-     * @param string $category One of CATEGORY_*
+     * @param string $category One of Tag::CATEGORY_*
+     * @param string[] $originalTagStrings Tag strings associated with the item before update
+     * @param string[] $updatedTagStrings Tag strings associated with the updated item
+     */
+    protected function saveInventoryItemTags(string $category, array $originalTagStrings, array $updatedTagStrings)
+    {
+        $tags = [];
+        foreach (array_diff($originalTagStrings, $updatedTagStrings) as $removed) {
+            if ($tag = $this->getTagByName($category, $removed)) {
+                $tag->decrementCount();
+                $tags[] = $tag;
+            }
+        }
+        foreach (array_diff($updatedTagStrings, $originalTagStrings) as $added) {
+            $tag = $this->getTagByName($category, $added);
+            if (!$tag) {
+                $tag = new Tag();
+                $tag->setName($added);
+                $tag->setCategory($category);
+            }
+            $tag->incrementCount();
+            $tags[] = $tag;
+        }
+        $collection = $this->getTagCollection();
+        foreach ($tags as $tag) {
+            $collection->replaceOne(
+                ['_id' => $tag->getObjectId()],
+                $tag,
+                ['upsert' => true]
+            );
+        }
+    }
+
+    /**
+     * Get tags, optionally by category
+     * 
+     * @param string $category One of Tag::CATEGORY_*
      * @return MongoDB\Driver\Cursor
      */
-    public function getTags(string $category) : iterable
+    public function getTags(string $category = null) : iterable
     {
         $this->init();
         $collection = $this->getTagCollection();
-        return $collection->find(['category' => $category]);
+        $filter = [];
+        if ($category) {
+            $filter = ['category' => $category];
+        }
+        return $collection->find($filter);
     }
 
     /**
      * Get "top" 5 tags by category
      * 
-     * @param string $category One of CATEGORY_*
+     * @param string $category One of Tag::CATEGORY_*
      * @return MongoDB\Driver\Cursor
      */
     public function getTopTags(string $category) : iterable
@@ -133,41 +184,21 @@ class DocumentStorage
 
     /**
      * Get a Tag entity by name
+     * 
+     * @return Tag|null
      */
     public function getTagByName(string $category, string $name) : ?Tag
     {
         $this->init();
         $collection = $this->getTagCollection();
-        // TODO: Make the search case insensitive
-        return $collection->findOne(['category' => $category, 'name' => $name]);
-    }
-
-    /**
-     * Persist tags
-     * 
-     * @param string $category One of CATEGORY_*
-     * @param array $tags Array of strings or Tag entities
-     */
-    public function saveTags(string $category, array $tags)
-    {
-        $collection = $this->getTagCollection();
-        foreach ($tags as $tag) {
-            if ($tag instanceof Tag) {
-                $tagEntity = $tag;
-            } else {
-                $tagEntity = $this->getTagByName($category, $tag);
-                if (!$tagEntity) {
-                    $tagEntity = new Tag();
-                    $tagEntity->setName($tag);
-                    $tagEntity->setCategory($category);
-                }
-            }
-            // TODO: Calculate each tag's item count
-            $result = $collection->replaceOne(
-                ['_id' => $tagEntity->getObjectId()],
-                $tagEntity,
-                ['upsert' => true]
-            );
-        }
+        return $collection->findOne(
+            [
+                'category' => $category, 
+                'name' => [
+                    '$regex' => '^' . $name . '$',
+                    '$options' => 'i'
+                ]
+            ]
+        );
     }
 }
