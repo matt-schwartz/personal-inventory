@@ -9,6 +9,9 @@ abstract class Persistable implements \MongoDB\BSON\Persistable
     /** @var \MongoDB\BSON\ObjectId */
     protected $id;
 
+    /** @var int */
+    protected $modifiedTime;
+
     public function __construct()
     {
         $this->id = new ObjectId();
@@ -66,5 +69,18 @@ abstract class Persistable implements \MongoDB\BSON\Persistable
     public function getId() : string
     {
         return (string) $this->id;
+    }
+
+    /**
+     * Set modified time to now
+     */
+    public function setModifiedTime()
+    {
+        $this->modifiedTime = time();
+    }
+
+    public function getModifiedTime()
+    {
+        return new \DateTime('@' . $this->modifiedTime);
     }
 }

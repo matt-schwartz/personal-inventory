@@ -17,6 +17,7 @@ vendor_download() {
     vendor_download https://code.jquery.com/jquery-3.3.1.min.js jquery.min.js &&
     vendor_download https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/css/select2.min.css select2.min.css &&
     vendor_download https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/js/select2.min.js select2.min.js &&
+    chmod a+w data/images
     echo "Setup complete"
     echo "Run 'docker-compose up' to start the application"
 )

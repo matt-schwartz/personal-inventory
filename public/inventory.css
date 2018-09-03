@@ -14,3 +14,8 @@ h1 {
 .item th[scope=row] {
     width: 15rem;
 }
+
+.item img {
+    max-width: 200px;
+    margin: 0 1rem 1rem 0;
+}

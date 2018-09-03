@@ -3,7 +3,7 @@
 {% block title %}{{ item.name }}{% endblock %}
 
 {% block body %}
-    {% macro row(header, data, currency) %}
+    {% macro scalarrow(header, data, currency) %}
         {% if data %}
             <tr>
                 <th scope="row">{{ header }}</th>
@@ -15,21 +15,46 @@
             </tr>
         {% endif %}
     {% endmacro %}
+
+    {% macro tagrow(header, category, tags) %}
+        {% if tags %}
+            <tr>
+                <th scope="row">{{ header }}</th>
+                <td>
+                    {% for tag in tags %}
+                        <a class="btn btn-info" href="{{ path('inventory_list_by_tag', {'category': category, 'tag': tag}) }}">{{ tag }}</a>
+                    {% endfor %}
+                </td>
+            </tr>
+        {% endif %}
+    {% endmacro %}
     {% import _self as table %}
 
     <table class="table table-borderless item">
         <tbody>
-            {{ table.row('Quantity', item.quantity) }}
-            {{ table.row('Purchase Price (x 1)', item.purchasePrice, true) }}
-            {{ table.row('Current Value (x 1)', item.value, true) }}
+            {{ table.scalarrow('Quantity', item.quantity) }}
+            {{ table.scalarrow('Purchase Price (x 1)', item.purchasePrice, true) }}
+            {{ table.scalarrow('Current Value (x 1)', item.value, true) }}
             {% if item.quantity > 1 %}
-                {{ table.row("Purchase Price (x #{item.quantity})", item.totalPurchasePrice, true) }}
-                {{ table.row("Current Value (x #{item.quantity})", item.totalValue, true) }}
+                {{ table.scalarrow("Purchase Price (x #{item.quantity})", item.totalPurchasePrice, true) }}
+                {{ table.scalarrow("Current Value (x #{item.quantity})", item.totalValue, true) }}
             {% endif %}
-            {# TODO: Make tags and locations links to inventory list with filter on tag #}
-            {{ table.row('Types / Tags', item.types|join(', ')) }}
-            {{ table.row('Location(s)', item.locations|join(', ')) }}
-            {{ table.row('Notes', item.notes) }}
+            {{ table.tagrow('Types / Tags', 'types', item.types) }}
+            {{ table.tagrow('Location(s)', 'locations', item.locations) }}
+            {{ table.scalarrow('Notes', item.notes) }}
+
+            {% if images %}
+                <tr>
+                    <th scope="row">Images</th>
+                    <td>
+                        {% for filename in images %}
+                            <a href="{{ path('inventory_image', {'id': item.id, 'filename': filename}) }}">
+                                <img src="{{ path('inventory_image', {'id': item.id, 'filename': filename}) }}">
+                            </a>
+                        {% endfor %}
+                    </td>
+                </tr>
+            {% endif %}
         </tbody>
     </table>
 

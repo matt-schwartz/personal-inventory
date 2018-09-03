@@ -99,6 +99,7 @@ class DocumentStorage
             $originalTypes = $originalItem->getTypes();
             $originalLocations = $originalItem->getLocations();
         }
+        $item->setModifiedTime();
         $inventory->replaceOne(
             ['_id' => $item->getObjectId()],
             $item,
@@ -138,6 +139,7 @@ class DocumentStorage
         }
         $collection = $this->getTagCollection();
         foreach ($tags as $tag) {
+            $tag->setModifiedTime();
             $collection->replaceOne(
                 ['_id' => $tag->getObjectId()],
                 $tag,

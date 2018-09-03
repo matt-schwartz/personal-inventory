@@ -17,3 +17,6 @@ inventory_get:
 inventory_edit:
     path: /inventory/{id}/edit
     controller: App\Controller\InventoryController::editItem
+inventory_image:
+    path: /inventory/{id}/images/{filename}
+    controller: App\Controller\InventoryController::image
