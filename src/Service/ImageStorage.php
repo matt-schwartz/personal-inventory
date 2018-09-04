@@ -39,7 +39,7 @@ class ImageStorage
         $count = 0;
         foreach ($files as $file) {
             if (!$file->isValid()) {
-                continue;
+                throw new \RuntimeException($file->getErrorMessage());
             }
             $extension = $file->guessExtension();
             if (!$extension) {
@@ -47,6 +47,7 @@ class ImageStorage
             }
             $file->move($itemPath, time() . '_' . $count . '.' . $extension);
             $count++;
+            // TODO: Also save a copy scaled to 200px wide
         }
     }
 

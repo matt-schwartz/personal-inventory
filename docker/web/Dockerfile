@@ -1,9 +1,5 @@
 FROM php:7.2.7-apache
 
-COPY ./docker/web/vhost.conf /etc/apache2/sites-available/000-default.conf
-
-WORKDIR /var/www/app
-
 # Install build dependencies, e.g. composer, system libs
 RUN apt-get update 1> /dev/null \
     && apt-get install -y git zip unzip 1> /dev/null \
@@ -15,5 +11,9 @@ RUN apt-get update 1> /dev/null \
 # PHP
 RUN pecl install mongodb-1.5.1 1> /dev/null \
     && docker-php-ext-enable mongodb \
-    && docker-php-ext-install bcmath 1> /dev/null \
-    && chown -R www-data:www-data /var/www/app
+    && docker-php-ext-install bcmath 1> /dev/null
+
+WORKDIR /var/www/app
+
+COPY ./docker/web/vhost.conf /etc/apache2/sites-available/000-default.conf
+COPY ./docker/web/inventory-php.ini /usr/local/etc/php/conf.d/inventory-php.ini

@@ -3,6 +3,9 @@
 {% block title %}{{ mode|capitalize }} Item{% endblock %}
 
 {% block body %}
+    {% for error in errors %}
+        <div class="alert alert-danger">{{ error }}</div>
+    {% endfor %}
     {{ form_start(form) }}
     {{ form_widget(form) }}
     <button type="submit" class="btn btn-primary" name="submit" value="submit">Save</button>

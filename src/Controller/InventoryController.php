@@ -63,6 +63,7 @@ class InventoryController extends Controller
 
     public function editItem(Request $request, $id = null)
     {
+        $errors = [];
         if ($id) {
             $item = $this->docs->getInventoryItem($id);
             if (!$item) {
@@ -74,6 +75,41 @@ class InventoryController extends Controller
             $mode = 'new';
         }
 
+        $form = $this->getItemForm($request, $item);
+        $form->handleRequest($request);
+        
+        if ($form->isSubmitted() && $form->isValid()) {
+            $item = $form->getData();
+            try {
+                $id = $this->docs->saveInventoryItem($item);
+                $this->images->saveItemImages($item, $request->files->get('form')['images']);
+            } catch (\Exception $e) {
+                $errors[] = $e->getMessage();
+            }
+            if (!$errors) {
+                if ($request->request->get('submit', 'submit') === 'submit_add') {
+                    return $this->redirectToRoute('inventory_add');
+                } elseif ($request->query->get('return_to', '') === 'list') {
+                    return $this->redirectToRoute('inventory_list');
+                } else {
+                    return $this->redirectToRoute('inventory_get', ['id' => $id]);
+                }
+            }
+        }
+
+        return $this->render(
+            'inventory/edit.html.twig', 
+            [
+                'form' => $form->createView(), 
+                'mode' => $mode, 
+                'images' => $this->images->getItemImages($item),
+                'errors' => $errors
+            ]
+        );
+    }
+
+    private function getItemForm(Request $request, InventoryItem $item)
+    {
         $tagAttributes = [
             'attr' => ['class' => 'tags'],
             'expanded' => false,
@@ -82,7 +118,7 @@ class InventoryController extends Controller
             'required' => false
         ];
 
-        $form = $this->createFormBuilder($item)
+        return $this->createFormBuilder($item)
             ->add('name', TextType::class)
             ->add('quantity', IntegerType::class)
             ->add(
@@ -129,26 +165,6 @@ class InventoryController extends Controller
                 ]
             )
             ->getForm();
-
-        $form->handleRequest($request);
-        
-        if ($form->isSubmitted() && $form->isValid()) {
-            $item = $form->getData();
-            $id = $this->docs->saveInventoryItem($item);
-            $this->images->saveItemImages($item, $request->files->get('form')['images']);
-            if ($request->request->get('submit', 'submit') === 'submit_add') {
-                return $this->redirectToRoute('inventory_add');
-            } elseif ($request->query->get('return_to', '') === 'list') {
-                return $this->redirectToRoute('inventory_list');
-            } else {
-                return $this->redirectToRoute('inventory_get', ['id' => $id]);
-            }
-        }
-
-        return $this->render(
-            'inventory/edit.html.twig', 
-            ['form' => $form->createView(), 'mode' => $mode, 'images' => $this->images->getItemImages($item)]
-        );
     }
 
     /**
