@@ -46,8 +46,7 @@
                                     <a class="dropdown-item" href="{{ path('inventory_list_by_tag', {'category': category, 'tag': tag}) }}">{{ tag }}</a>
                                 {% endfor %}
                                 <div class="dropdown-divider"></div>
-                                {# TODO: Make a tag list page #}
-                                {# <a class="dropdown-item" href="#">More...</a> #}
+                                <a class="dropdown-item" href="{{ path('tag_list', {'category': category}) }}">More...</a>
                             </div>
                         </li>
                     {% endfor %}

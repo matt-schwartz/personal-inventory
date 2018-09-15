@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Tags{% endblock %}
+
+{% block body %}
+    {% for tag in tags %}
+        {# TODO: Replace with cards containing images #}
+        <div class="d-inline-flex m-2" style="width:12rem">
+            <a class="btn btn-info" href="{{ path('inventory_list_by_tag', {'category': tag.category, 'tag': tag.name}) }}">
+                {{ tag.name }} ({{ tag.count }})
+            </a>
+        </div>
+    {% else %}
+        <p>No tags yet. <a href="{{ path('inventory_add') }}">Add to the inventory</a>.</p>
+    {% endfor %}
+{% endblock %}

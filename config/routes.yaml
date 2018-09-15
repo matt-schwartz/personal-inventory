@@ -4,19 +4,23 @@ index:
 
 inventory_list:
     path: /inventory
-    controller: App\Controller\InventoryController::listItems
+    controller: App\Controller\Inventory::listItems
 inventory_list_by_tag:
     path: /inventory/tags/{category}/{tag}
-    controller: App\Controller\InventoryController::listItems
+    controller: App\Controller\Inventory::listItems
 inventory_add:
     path: /inventory/add
-    controller: App\Controller\InventoryController::editItem
+    controller: App\Controller\Inventory::editItem
 inventory_get:
     path: /inventory/{id}
-    controller: App\Controller\InventoryController::getItem
+    controller: App\Controller\Inventory::getItem
 inventory_edit:
     path: /inventory/{id}/edit
-    controller: App\Controller\InventoryController::editItem
+    controller: App\Controller\Inventory::editItem
 inventory_image:
     path: /inventory/{id}/images/{filename}
-    controller: App\Controller\InventoryController::image
+    controller: App\Controller\Inventory::image
+
+tag_list:
+    path: /tags/{category}
+    controller: App\Controller\Tag::listTags

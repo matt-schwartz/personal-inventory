@@ -47,8 +47,7 @@ class DocumentStorage
      */
     public function getInventoryItems() : iterable
     {
-        // TODO: Sort
-        return $this->getInventoryCollection()->find();
+        return $this->getInventoryCollection()->find([], ['sort' => ['name' => 1]]);
     }
 
     /**
@@ -60,13 +59,13 @@ class DocumentStorage
      */
     public function getInventoryItemsByTag(string $category, string $tag) : iterable
     {
-        // TODO: Sort
         return $this->getInventoryCollection()->find([
             $category => [
                 '$regex' => '^' . $tag . '$',
                 '$options' => 'i'
             ]
-        ]);
+        ], 
+        ['sort' => ['name' => 1]]);
     }
 
     /**
@@ -152,17 +151,26 @@ class DocumentStorage
      * Get tags, optionally by category
      * 
      * @param string $category One of Tag::CATEGORY_*
+     * @param string[] $orderBy Field to order by
      * @return MongoDB\Driver\Cursor
      */
-    public function getTags(string $category = null) : iterable
+    public function getTags(string $category = null, array $orderBy = []) : iterable
     {
         $this->init();
         $collection = $this->getTagCollection();
         $filter = [];
+        $options = [];
         if ($category) {
             $filter = ['category' => $category];
         }
-        return $collection->find($filter);
+        foreach ($orderBy as $field) {
+            $direction = 1;
+            if ($field === 'count') {
+                $direction = -1;
+            }
+            $options['sort'] = [$field => $direction];
+        }
+        return $collection->find($filter, $options);
     }
 
     /**
@@ -177,7 +185,7 @@ class DocumentStorage
         $collection = $this->getTagCollection();
         return $collection->find(
             ['category' => $category],
-            ['limit' => 5, 'sort' => ['count' => -1]]
+            ['limit' => 5, 'sort' => ['count' => -1, 'name' => 1]]
         );
     }
 

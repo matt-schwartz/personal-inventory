@@ -19,7 +19,7 @@ use App\Entity\Tag;
 use App\Service\DocumentStorage;
 use App\Service\ImageStorage;
 
-class InventoryController extends Controller
+class Inventory extends Controller
 {
     /** @var DocumentStorage */
     protected $docs;
