@@ -10,6 +10,16 @@
     {{ form_widget(form) }}
     <button type="submit" class="btn btn-primary" name="submit" value="submit">Save</button>
     <button type="submit" class="btn btn-secondary" name="submit" value="submit_add">Save And Add Another</button>
+    {% if mode == 'edit' %}
+        <button 
+            type="submit" 
+            class="btn btn-danger" 
+            name="submit" 
+            value="delete" 
+            data-confirm="Are you sure you would like to delete this item?">
+            Delete
+        </button>
+    {% endif %}
     {{ form_end(form) }}
 {% endblock %}
 

@@ -75,6 +75,12 @@ class Inventory extends Controller
             $mode = 'new';
         }
 
+        // Handle delete
+        if ($request->isMethod('POST') && $request->request->get('submit', 'submit') === 'delete') {
+            $this->docs->deleteInventoryItem($item);
+            return $this->redirectToRoute('inventory_list');
+        }
+
         $form = $this->getItemForm($request, $item);
         $form->handleRequest($request);
         

@@ -47,7 +47,10 @@ class DocumentStorage
      */
     public function getInventoryItems() : iterable
     {
-        return $this->getInventoryCollection()->find([], ['sort' => ['name' => 1]]);
+        return $this->getInventoryCollection()->find(
+            ['deleted' => false], 
+            ['sort' => ['name' => 1]]
+        );
     }
 
     /**
@@ -63,7 +66,8 @@ class DocumentStorage
             $category => [
                 '$regex' => '^' . $tag . '$',
                 '$options' => 'i'
-            ]
+            ],
+            'deleted' => false
         ], 
         ['sort' => ['name' => 1]]);
     }
@@ -76,7 +80,7 @@ class DocumentStorage
     public function getInventoryItem(string $id) : ?InventoryItem
     {
         $inventory = $this->getInventoryCollection();
-        return $inventory->findOne(['_id' => new ObjectId("$id")]);
+        return $inventory->findOne(['_id' => new ObjectId("$id"), 'deleted' => false]);
     }
 
     /**
@@ -145,6 +149,25 @@ class DocumentStorage
                 ['upsert' => true]
             );
         }
+    }
+
+    /**
+     * Soft delete an inventory item
+     */
+    public function deleteInventoryItem(InventoryItem $item)
+    {
+        if (!$item) {
+            throw new \RuntimeException('Empty item can not be deleted');
+        }
+        $item->setDeleted(true);
+        $inventory = $this->getInventoryCollection();
+        $inventory->replaceOne(
+            ['_id' => $item->getObjectId()],
+            $item,
+            ['upsert' => true]
+        );
+        $this->saveInventoryItemTags(Tag::CATEGORY_ITEM_TYPE, $item->getTypes(), []);
+        $this->saveInventoryItemTags(Tag::CATEGORY_ITEM_LOCATION, $item->getLocations(), []);
     }
 
     /**
