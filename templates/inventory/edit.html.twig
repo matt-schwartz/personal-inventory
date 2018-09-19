@@ -6,8 +6,29 @@
     {% for error in errors %}
         <div class="alert alert-danger">{{ error }}</div>
     {% endfor %}
+
     {{ form_start(form) }}
     {{ form_widget(form) }}
+
+    {% if images %}
+        <div class="form-group">
+            <label class="form-control-label">Current Images</label>
+            <div>
+                {% for filename in images %}
+                    <div class="d-inline-block m-1 text-center">
+                        <img style="width:100px;display:block" src="{{ path('inventory_image', {'id': itemid, 'filename': filename}) }}?w=200">
+                        <div class="form-check" style="width:100%">
+                            <label class="form-check-label">
+                                <input class="form-check-input" type="checkbox" name="delete_images[]" value="{{ filename }}">
+                                Delete
+                            </label>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+
     <button type="submit" class="btn btn-primary" name="submit" value="submit">Save</button>
     <button type="submit" class="btn btn-secondary" name="submit" value="submit_add">Save And Add Another</button>
     {% if mode == 'edit' %}

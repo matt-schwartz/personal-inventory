@@ -49,7 +49,7 @@
                     <td>
                         {% for filename in images %}
                             <a href="{{ path('inventory_image', {'id': item.id, 'filename': filename}) }}">
-                                <img src="{{ path('inventory_image', {'id': item.id, 'filename': filename}) }}">
+                                <img src="{{ path('inventory_image', {'id': item.id, 'filename': filename}) }}?w=200">
                             </a>
                         {% endfor %}
                     </td>

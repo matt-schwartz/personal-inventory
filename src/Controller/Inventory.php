@@ -69,9 +69,11 @@ class Inventory extends Controller
             if (!$item) {
                 throw $this->createNotFoundException('Item not found');
             }
+            $images = $this->images->getItemImages($item);
             $mode = 'edit';
         } else {
             $item = new InventoryItem();
+            $images = [];
             $mode = 'new';
         }
 
@@ -89,6 +91,7 @@ class Inventory extends Controller
             try {
                 $id = $this->docs->saveInventoryItem($item);
                 $this->images->saveItemImages($item, $request->files->get('form')['images']);
+                $this->deleteImages($request, $item);
             } catch (\Exception $e) {
                 $errors[] = $e->getMessage();
             }
@@ -108,7 +111,8 @@ class Inventory extends Controller
             [
                 'form' => $form->createView(), 
                 'mode' => $mode, 
-                'images' => $this->images->getItemImages($item),
+                'itemid' => $item->getId(),
+                'images' => $images,
                 'errors' => $errors
             ]
         );
@@ -197,6 +201,22 @@ class Inventory extends Controller
     }
 
     /**
+     * Delete images from form POST
+     * 
+     * @param Request $request
+     * @param InventoryItem $item
+     */
+    private function deleteImages(Request $request, InventoryItem $item)
+    {
+        $formInput = $request->request->get('delete_images');
+        if ($formInput) {
+            foreach ($formInput as $filename) {
+                $this->images->deleteItemImage($item, $filename);
+            }
+        }
+    }
+
+    /**
      * GET image content; POST to delete
      */
     public function image(Request $request, $id, $filename)
@@ -209,6 +229,9 @@ class Inventory extends Controller
             $this->images->deleteItemImage($item, $filename);
             return new JsonResponse(['success' => 1]);
         } else {
+            if ($width = $request->query->get('w')) {
+                $filename = str_replace('.', 'w' . $width . '.', $filename);
+            }
             $path = $this->images->getItemImagePath($item) . DIRECTORY_SEPARATOR . $filename;
             if (file_exists($path)) {
                 return new BinaryFileResponse($path);

@@ -6,6 +6,7 @@
     "require": {
         "php": "^7.2.0",
         "ext-iconv": "*",
+        "gumlet/php-image-resize": "1.9.*",
         "mongodb/mongodb": "1.4.0",
         "sensio/framework-extra-bundle": "^5.1",
         "symfony/asset": "^4.1",
