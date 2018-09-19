@@ -13,6 +13,13 @@ Advantages to using this system over a simple spreadsheet:
 - Incorporate photos and images
 - Comfortabe browsing and editing on a mobile device
 
+Screenshots
+-----------
+
+![View an item](screenshots/view_item.png)
+![List of items](screenshots/list_items.png)
+![Edit an item](screenshots/edit_item.png)
+
 Security
 --------
 

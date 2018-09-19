@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
@@ -131,6 +132,9 @@ class Inventory extends Controller
         return $this->createFormBuilder($item)
             ->add('name', TextType::class)
             ->add('quantity', IntegerType::class)
+            ->add('manufacturer', TextType::class, ['required' => false])
+            ->add('model', TextType::class, ['required' => false])
+            ->add('serialNumbers', TextareaType::class, ['required' => false])
             ->add(
                 'purchasePrice', 
                 MoneyType::class, 
@@ -158,6 +162,15 @@ class Inventory extends Controller
                     'label' => 'Location(s)',
                     'choices' => $this->getTags($request, 'locations', Tag::CATEGORY_ITEM_LOCATION),
                 ] + $tagAttributes
+            )
+            ->add(
+                'acquiredDate', 
+                DateType::class,
+                [
+                    'label' => 'Date Acquired', 
+                    'widget' => 'single_text',
+                    'required' => false
+                ]
             )
             ->add(
                 'notes', 

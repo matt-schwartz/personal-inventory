@@ -34,6 +34,9 @@
         <tbody>
             {{ table.scalarrow('Quantity', item.quantity) }}
             {{ table.scalarrow('Purchase Price (x 1)', item.purchasePrice, true) }}
+            {{ table.scalarrow('Manufacturer', item.manufacturer) }}
+            {{ table.scalarrow('Model', item.model) }}
+            {{ table.scalarrow('Serial Numbers', item.serialNumbers|nl2br) }}
             {{ table.scalarrow('Current Value (x 1)', item.value, true) }}
             {% if item.quantity > 1 %}
                 {{ table.scalarrow("Purchase Price (x #{item.quantity})", item.totalPurchasePrice, true) }}
@@ -41,6 +44,9 @@
             {% endif %}
             {{ table.tagrow('Types / Tags', 'types', item.types) }}
             {{ table.tagrow('Location(s)', 'locations', item.locations) }}
+            {% if item.acquiredDate %}
+                {{ table.scalarrow('Acquired', item.acquiredDate|date("m/d/Y")) }}  {# TODO: Localize date format #}
+            {% endif %}
             {{ table.scalarrow('Notes', item.notes) }}
 
             {% if images %}

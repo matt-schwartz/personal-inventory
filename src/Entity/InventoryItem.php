@@ -8,6 +8,15 @@ class InventoryItem extends Persistable
     protected $name;
 
     /** @var string */
+    protected $manufacturer;
+
+    /** @var string */
+    protected $model;
+
+    /** @var string */
+    protected $serialNumbers;
+
+    /** @var string */
     protected $notes;
 
     /** @var string[] */
@@ -25,6 +34,9 @@ class InventoryItem extends Persistable
     /** @var int */
     protected $quantity = 1;
 
+    /** @var int */
+    protected $acquiredDate;
+
     /** @var bool Soft delete */
     protected $deleted = false;
 
@@ -36,6 +48,36 @@ class InventoryItem extends Persistable
     public function getName() : ?string
     {
         return $this->name;
+    }
+
+    public function setManufacturer(string $manufacturer) 
+    {
+        $this->manufacturer = $manufacturer;
+    }
+
+    public function getManufacturer() : ?string
+    {
+        return $this->manufacturer;
+    }
+
+    public function setModel(string $model) 
+    {
+        $this->model = $model;
+    }
+
+    public function getModel() : ?string
+    {
+        return $this->model;
+    }
+
+    public function setSerialNumbers(string $serialNumbers) 
+    {
+        $this->serialNumbers = $serialNumbers;
+    }
+
+    public function getSerialNumbers() : ?string
+    {
+        return $this->serialNumbers;
     }
 
     public function setNotes(string $notes)
@@ -194,6 +236,24 @@ class InventoryItem extends Persistable
     public function getQuantity() : int
     {
         return $this->quantity;
+    }
+
+    public function setAcquiredDate(\DateTime $acquiredDate = null)
+    {
+        if ($acquiredDate) {
+            $this->acquiredDate = $acquiredDate->format('U');
+        } else {
+            $this->acquiredDate = null;
+        }
+    }
+
+    public function getAcquiredDate() : ?\DateTime
+    {
+        if ($this->acquiredDate) {
+            return new \DateTime('@' . $this->acquiredDate);
+        } else {
+            return null;
+        }
     }
 
     public function setDeleted(bool $deleted)
