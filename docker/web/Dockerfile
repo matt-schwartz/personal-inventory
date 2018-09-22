@@ -14,7 +14,7 @@ RUN pecl install mongodb-1.5.1 1> /dev/null \
     && docker-php-ext-configure gd --with-gd --with-webp-dir --with-jpeg-dir \
         --with-png-dir --with-zlib-dir --with-xpm-dir --with-freetype-dir --enable-gd-native-ttf \
     && docker-php-ext-enable mongodb \
-    && docker-php-ext-install bcmath gd 1> /dev/null
+    && docker-php-ext-install bcmath exif gd 1> /dev/null
 
 WORKDIR /var/www/app
 

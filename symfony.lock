@@ -47,6 +47,9 @@
     "fig/link-util": {
         "version": "1.0.0"
     },
+    "gumlet/php-image-resize": {
+        "version": "1.9.1"
+    },
     "mongodb/mongodb": {
         "version": "1.4.0"
     },
