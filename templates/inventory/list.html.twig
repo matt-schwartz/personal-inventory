@@ -1,6 +1,12 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Items{% if tag %} > {{ tag }}{% endif %}{% endblock %}
+{% block title %}
+    {% if breadcrumb %}
+        <a href="{{ path('inventory_list') }}">Items</a> > {{ breadcrumb }}
+    {% else %}
+        Items
+    {% endif %}
+{% endblock %}
 
 {% block body %}
     <table class="table table-striped table-hover">

@@ -36,8 +36,13 @@ class Inventory extends Controller
 
     public function listItems(Request $request, string $category = null, string $tag = null)
     {
+        $breadcrumb = '';
         if ($category && $tag) {
             $items = $this->docs->getInventoryItemsByTag($category, $tag);
+            $breadcrumb = $tag;
+        } elseif ($query = $request->query->get('q', '')) {
+            $items = $this->docs->searchInventoryItems($query);
+            $breadcrumb = $query;
         } else {
             $items = $this->docs->getInventoryItems();
         }
@@ -45,7 +50,7 @@ class Inventory extends Controller
             'inventory/list.html.twig', 
             [
                 'items' => $items,
-                'tag' => $tag
+                'breadcrumb' => $breadcrumb
             ]
         );
     }

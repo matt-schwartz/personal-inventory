@@ -20,6 +20,19 @@ class DocumentStorage
     {
         if (!$this->mongo) {
             $this->mongo = new MongoDB(getenv('DATABASE_URL'));
+            // Create full text index if it doesn't already exist
+            $inventory = $this->mongo->inventory->inventory;
+            $exists = false;
+            foreach ($inventory->listIndexes() as $index) {
+                if ($index->isText()) {
+                    $exists = true;
+                    break;
+                }
+            }
+            if (!$exists) {
+                // Note this is a blocking process, so running this on a collection with data may hinder performance
+                $inventory->createIndex(['$**' => 'text']);
+            }
         }
     }
 
@@ -34,6 +47,11 @@ class DocumentStorage
         return $this->mongo->inventory->inventory;
     }
 
+    /**
+     * Get a reference to our tag collection
+     * 
+     * @return MongoDB\Collection
+     */
     protected function getTagCollection() : \MongoDB\Collection
     {
         $this->init();
@@ -51,6 +69,19 @@ class DocumentStorage
             ['deleted' => false], 
             ['sort' => ['name' => 1]]
         );
+    }
+
+    /**
+     * Get inventory items containing a string
+     * 
+     * @return MongoDB\Driver\Cursor
+     */
+    public function searchInventoryItems(string $query) : iterable
+    {
+        return $this->getInventoryCollection()->find([
+            '$text' => ['$search' => $query],
+            'deleted' => false
+        ]);
     }
 
     /**
