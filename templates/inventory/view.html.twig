@@ -18,13 +18,10 @@
 
     {% macro tagrow(header, category, tags) %}
         {% if tags %}
+            {% import 'macros.html.twig' as macros %}
             <tr>
                 <th scope="row">{{ header }}</th>
-                <td>
-                    {% for tag in tags %}
-                        <a class="btn btn-info" href="{{ path('inventory_list_by_tag', {'category': category, 'tag': tag}) }}">{{ tag }}</a>
-                    {% endfor %}
-                </td>
+                <td>{{ macros.tags(category, tags) }}</td>
             </tr>
         {% endif %}
     {% endmacro %}

@@ -2,33 +2,59 @@
 
 {% block title %}
     {% if breadcrumb %}
-        <a href="{{ path('inventory_list') }}">Items</a> > {{ breadcrumb }}
+        {# TODO: Link "items" while stripping tags for base title block #}
+        {# <a href="{{ path('inventory_list') }}">Items</a> > {{ breadcrumb }} #}
+        Items > {{ breadcrumb }}
     {% else %}
         Items
     {% endif %}
 {% endblock %}
 
 {% block body %}
+    {% import 'macros.html.twig' as macros %}
+
     <table class="table table-striped table-hover">
         <thead>
             <tr>
                 <th scope="col"></th>
+                <th scope="col" class="text-right d-none d-md-table-cell">Location</th>
                 <th scope="col" class="text-right" style="width:4rem">Qty</th>
                 <th scope="col" class="text-right" style="width:10rem">Est. Value</th>
             </tr>
         </thead>
         <tbody>
+            {% set total_quantity = 0 %}
+            {% set total_value = 0.0 %}
+
             {% for item in items %}
                 <tr>
-                    <td><a href="{{ path('inventory_get', {'id': item.id}) }}">{{ item.name }}</a></td>
+                    <td>
+                        <a href="{{ path('inventory_get', {'id': item.id}) }}">{{ item.name }}</a>
+                    </td>
+                    <td class="text-right d-none d-md-table-cell">
+                        {{ macros.tags('locations', item.locations) }}
+                    </td>
                     <td class="text-right">{{ item.quantity }}</td>
                     <td class="text-right">{{ item.totalValue|localizedcurrency('USD') }}
                 </tr>
+                {% set total_quantity = total_quantity + item.quantity %}
+                {% set total_value = total_value + item.totalValue %}
             {% else %}
                 <tr>
-                    <td colspan="3">No items. Would you like to <a href="{{ path('inventory_add') }}">add one</a>?</td>
+                    <td colspan="4">No items. Would you like to <a href="{{ path('inventory_add') }}">add one</a>?</td>
                 </tr>
             {% endfor %}
+            
+            {% if total_quantity or total_value %}
+                <tfoot>
+                    <tr>
+                        <th scope="col"></th>
+                        <th scope="col" class="d-none d-md-table-cell"></th>
+                        <th scope="col" class="text-right">{{ total_quantity }}</th>
+                        <th scope="col" class="text-right">{{ total_value|localizedcurrency('USD') }}
+                    </tr>
+                </tfoot>
+            {% endif %}
         </tbody>
     </table>
 

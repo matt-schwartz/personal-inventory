@@ -1,0 +1,15 @@
+{# Single tag button #}
+{% macro tag(category, tag) %}
+    <a class="btn btn-info" 
+       href="{{ path('inventory_list_by_tag', {'category': category, 'tag': tag}) }}">
+       {{ tag }}
+    </a>
+{% endmacro %}
+
+{# Set of tag buttons #}
+{% macro tags(category, tags) %}
+    {% import _self as macros %}
+    {% for tag in tags %}
+        {{ macros.tag(category, tag) }}
+    {% endfor %}
+{% endmacro %}
