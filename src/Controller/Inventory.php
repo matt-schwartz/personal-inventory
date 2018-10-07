@@ -19,6 +19,7 @@ use App\Entity\InventoryItem;
 use App\Entity\Tag;
 use App\Service\DocumentStorage;
 use App\Service\ImageStorage;
+use Symfony\Component\HttpFoundation\Response;
 
 class Inventory extends Controller
 {
@@ -236,6 +237,8 @@ class Inventory extends Controller
 
     /**
      * GET image content; POST to delete
+     * 
+     * Query string parameters "w" and "h" can be used to get a scaled version. Original images will be scaled as needed.
      */
     public function image(Request $request, $id, $filename)
     {
@@ -247,12 +250,9 @@ class Inventory extends Controller
             $this->images->deleteItemImage($item, $filename);
             return new JsonResponse(['success' => 1]);
         } else {
-            if ($width = $request->query->get('w')) {
-                $filename = str_replace('.', 'w' . $width . '.', $filename);
-            }
-            $path = $this->images->getItemImagePath($item) . DIRECTORY_SEPARATOR . $filename;
+            $path = $this->images->getFilePath($item, $filename, $request->query->get('w'), $request->query->get('h'));
             if (file_exists($path)) {
-                return new BinaryFileResponse($path);
+                return new BinaryFileResponse($path, Response::HTTP_OK, ['Cache-Control' => 'max-age=14400']);
             } else {
                 throw $this->createNotFoundException('Image not found');
             }

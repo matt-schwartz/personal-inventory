@@ -2,9 +2,9 @@
 
 {% block title %}
     {% if breadcrumb %}
-        {# TODO: Link "items" while stripping tags for base title block #}
+        {# TODO: Link "items" while stripping tags in base title block #}
         {# <a href="{{ path('inventory_list') }}">Items</a> > {{ breadcrumb }} #}
-        Items > {{ breadcrumb }}
+        Items &raquo; {{ breadcrumb }}
     {% else %}
         Items
     {% endif %}
@@ -45,18 +45,14 @@
                 </tr>
             {% endfor %}
             
-            {% if total_quantity or total_value %}
-                <tfoot>
-                    <tr>
-                        <th scope="col"></th>
-                        <th scope="col" class="d-none d-md-table-cell"></th>
-                        <th scope="col" class="text-right">{{ total_quantity }}</th>
-                        <th scope="col" class="text-right">{{ total_value|localizedcurrency('USD') }}
-                    </tr>
-                </tfoot>
-            {% endif %}
+            <tfoot>
+                <tr>
+                    <td><a class="btn btn-primary" href="{{ path('inventory_add') }}?return_to=list">Add</a></td>
+                    <th scope="col" class="d-none d-md-table-cell"></th>
+                    <th scope="col" class="text-right">{% if total_quantity %}{{ total_quantity }}{% endif %}</th>
+                    <th scope="col" class="text-right">{% if total_value %}{{ total_value|localizedcurrency('USD') }}{% endif %}</td>
+                </tr>
+            </tfoot>
         </tbody>
     </table>
-
-    <a class="btn btn-primary" href="{{ path('inventory_add') }}?return_to=list">Add</a>
 {% endblock %}

@@ -19,3 +19,12 @@ h1 {
     max-width: 200px;
     margin: 0 1rem 1rem 0;
 }
+
+.tag-list .card {
+    width: 202px;
+}
+
+.tag-list .no-image {
+    background-color: #c0c0c0;
+    height: 200px;
+}

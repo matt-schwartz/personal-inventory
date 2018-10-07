@@ -85,25 +85,6 @@ class DocumentStorage
     }
 
     /**
-     * Get inventory items by tag name
-     * 
-     * @param string $category One of Tag::CATEGORY_*
-     * @param string $tag Tag name
-     * @return MongoDB\Driver\Cursor
-     */
-    public function getInventoryItemsByTag(string $category, string $tag) : iterable
-    {
-        return $this->getInventoryCollection()->find([
-            $category => [
-                '$regex' => '^' . $tag . '$',
-                '$options' => 'i'
-            ],
-            'deleted' => false
-        ], 
-        ['sort' => ['name' => 1]]);
-    }
-
-    /**
      * Get an inventory item
      * 
      * @return App\Entity\InventoryItem
@@ -112,6 +93,45 @@ class DocumentStorage
     {
         $inventory = $this->getInventoryCollection();
         return $inventory->findOne(['_id' => new ObjectId("$id"), 'deleted' => false]);
+    }
+
+    /**
+     * Get inventory items by tag name
+     * 
+     * @param string $category One of Tag::CATEGORY_*
+     * @param string $tag Tag name
+     * @return MongoDB\Driver\Cursor
+     */
+    public function getInventoryItemsByTag(string $category, string $tag) : iterable
+    {
+        return $this->getInventoryCollection()->find(
+            [
+                $category => [
+                    '$regex' => '^' . $tag . '$',
+                    '$options' => 'i'
+                ],
+                'deleted' => false
+            ], 
+            ['sort' => ['name' => 1]]
+        );
+    }
+
+    /**
+     * Get one random inventory item by tag name
+     * 
+     * @param string $category One of Tag::CATEGORY_*
+     * @param string $tag Tag name
+     * @return MongoDB\Driver\Cursor
+     */
+    public function getRandomInventoryItemByTag(string $category, string $tag) : ?InventoryItem
+    {
+        return $this->getInventoryCollection()->findOne([
+            $category => [
+                '$regex' => '^' . $tag . '$',
+                '$options' => 'i'
+            ],
+            'deleted' => false
+        ]);
     }
 
     /**

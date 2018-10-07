@@ -3,14 +3,29 @@
 {% block title %}Tags{% endblock %}
 
 {% block body %}
-    {% for tag in tags %}
-        {# TODO: Replace with cards containing images #}
-        <div class="d-inline-flex m-2" style="width:12rem">
-            <a class="btn btn-info" href="{{ path('inventory_list_by_tag', {'category': tag.category, 'tag': tag.name}) }}">
-                {{ tag.name }} ({{ tag.count }})
-            </a>
-        </div>
-    {% else %}
-        <p>No tags yet. <a href="{{ path('inventory_add') }}">Add to the inventory</a>.</p>
-    {% endfor %}
+    <div class="tag-list d-inline-flex flex-wrap">
+        {% for tag in tags %}
+
+            <div class="card m-2">
+                <a href="{{ path('inventory_list_by_tag', {'category': tag.category, 'tag': tag.name}) }}">
+                    {% if images[tag.name] %}
+                        <img class="card-img-top" src="{{ path('inventory_image', {'id': images[tag.name]['itemid'], 'filename': images[tag.name]['filename']}) }}?w=200&h=200" alt="{{ tag.name }}">
+                    {% else %}
+                        <div class="card-img-top no-image"></div>
+                    {% endif %}
+                </a>
+
+                <div class="card-body text-center">
+                    {# <h5 class="card-title">Card title</h5> #}
+                    {# <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p> #}
+                    <a class="btn btn-info" href="{{ path('inventory_list_by_tag', {'category': tag.category, 'tag': tag.name}) }}">
+                        {{ tag.name }} ({{ tag.count }})
+                    </a>
+                </div>
+            </div>
+
+        {% else %}
+            <p>No tags yet. <a href="{{ path('inventory_add') }}">Add to the inventory</a>.</p>
+        {% endfor %}
+    </div>
 {% endblock %}
