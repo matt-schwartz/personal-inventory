@@ -1,4 +1,4 @@
-FROM php:7.2.7-apache
+FROM php:7.2.28-apache
 
 # Install build dependencies, e.g. composer, system libs
 RUN apt-get update 1> /dev/null \
@@ -10,9 +10,9 @@ RUN apt-get update 1> /dev/null \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # PHP
-RUN pecl install mongodb-1.5.1 1> /dev/null \
+RUN pecl install mongodb-1.5.5 1> /dev/null \
     && docker-php-ext-configure gd --with-gd --with-webp-dir --with-jpeg-dir \
-        --with-png-dir --with-zlib-dir --with-xpm-dir --with-freetype-dir --enable-gd-native-ttf \
+        --with-png-dir --with-zlib-dir --with-xpm-dir --with-freetype-dir \
     && docker-php-ext-enable mongodb \
     && docker-php-ext-install bcmath exif gd 1> /dev/null
 
