@@ -35,7 +35,11 @@
                         {{ macros.tags('locations', item.locations) }}
                     </td>
                     <td class="text-right">{{ item.quantity }}</td>
-                    <td class="text-right">{{ item.totalValue|localizedcurrency('USD') }}
+                    <td class="text-right">
+                        {% if item.totalValue %}
+                            {{ item.totalValue|localizedcurrency('USD') }}
+                        {% endif %}
+                    </td>
                 </tr>
                 {% set total_quantity = total_quantity + item.quantity %}
                 {% set total_value = total_value + item.totalValue %}
